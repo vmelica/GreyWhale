@@ -1,0 +1,5 @@
+"MMSNW","ID","BlubberDEPTH","Age.class","UME","date","Month","Latitude.N","Longitude.W","State","CarCode","BodyCond","Adjusted_BC","Sex","COD","Lipid","Cts","Ctn","Aldo"
+"CRC","1587","Surface","Immature","Pre-UME","2017-5-24","May",46.83,-124.11,"WA","3","Good","Good","F","Trauma",13.1,43.9,1.67,0.411
+"CRC","1665","Surface","Immature","Pre-UME","2018-6-28","June",47.02,-124.16,"WA","2","Poor","Poor","F","Trauma",50.35,14.2,21.66,0.715
+"WDFW","2019017","Surface","Immature","UME 2019","2019-2-23","February",47.19,-122.79,"WA","2","Poor","Poor","F","Nutritional stress",36.4,32.1,2.97,0.202
+"CRC","1652","Surface","Adult","Pre-UME","2018-5-8","May",47.56,-124.36,"WA","4","Poor","Poor","F","Undetermined",NA,4,7.85,14.449

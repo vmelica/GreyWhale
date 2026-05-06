@@ -1,0 +1,36 @@
+"MMSNW","ID","Age.class","UME","date","Month","Latitude.N","Longitude.W","State","CarCode","Adjusted_BC","Sex","COD","Lipid","Cts","Ctn","Aldo"
+"WDFW","201730","Immature","Pre-UME","2017-5-2","May",46.33,-124.08,"WA","3","Good","M","Entanglement",28.76,6.4,3,0.518
+"PSU","190430","Adult","UME 2019","2019-4-30","April",46.37,-124.07,"WA","3","Fair","F","Undetermined",2.6,3.2,0.16,0.058
+"PSU","190417","Adult","UME 2019","2019-4-17","April",46.6,-124.07,"WA","2.5","Fair","F","Trauma",16.39,1.9,0.52,0.074
+"PSU","180413","Immature","Pre-UME","2018-4-15","April",46.63,-124.07,"WA","3.5","Good","M","Entanglement",59.3,1.2,0.54,0.147
+"PSU","190402","Adult","UME 2019","2019-4-2","April",46.65,-124.07,"WA","2.5","Fair","F","Undetermined",24.15,3.3,0.33,0.095
+"WDFW","2019047","Immature","UME 2019","2019-6-3","June",46.73,-124.09,"WA","3","Poor","M","Nutritional stress",2.21,1,0.16,0.038
+"CRC","1278","Adult","Pre-UME","2013-7-30","July",46.81,-124.1,"WA","3","Fair","F","Trauma",2.29,8.9,0.27,0.295
+"CRC","1587","Immature","Pre-UME","2017-5-24","May",46.83,-124.11,"WA","3","Good","F","Trauma",13.1,43.9,1.67,0.411
+"CRC","1724","Adult","UME 2019","2019-5-16","May",46.86,-124.11,"WA","2.5","Poor","F","Nutritional stress",5.9,0.1,0.39,0.051
+"CRC","1732","Adult","UME 2019","2019-6-1","June",46.86,-124.12,"WA","2.5","Poor","M","Nutritional stress",23.88,0.6,0.44,0.037
+"CRC","1714","Immature","UME 2019","2019-4-18","April",46.96,-124.18,"WA","3.5","Poor","F","Undetermined",18.65,2.1,3.17,1.523
+"CRC","1665","Immature","Pre-UME","2018-6-28","June",47.02,-124.16,"WA","2","Poor","F","Trauma",50.35,14.2,21.66,0.715
+"CRC","1723","Immature","UME 2019","2019-5-15","May",47.05,-124.18,"WA","3","Poor","F","Nutritional stress",12.74,8.3,4.65,2.345
+"CRC","1720","Immature","UME 2019","2019-5-9","May",47.06,-124.18,"WA","2.5","Poor","M","Trauma",4.59,1.1,3.6,0.092
+"CRC","1429","Immature","Pre-UME","2014-8-20","August",47.08,-124.18,"WA","3","Good","F","Undetermined",NA,2.7,1.51,0.813
+"CRC","1740","Adult","UME 2019","2019-7-6","July",47.12,-122.91,"WA","2.5","Poor","M","Nutritional stress",13.42,5.7,0.22,0.112
+"CRC","1149","Adult","Pre-UME","2011-4-20","April",47.18,-124.2,"WA","3.5","Fair","F","Nutritional stress",0.64,2.4,0.94,0.247
+"WDFW","2019017","Immature","UME 2019","2019-2-23","February",47.19,-122.79,"WA","2","Poor","F","Nutritional stress",36.4,32.1,2.97,0.202
+"CRC","1650","Adult","Pre-UME","2018-4-20","April",47.27,-124.23,"WA","3","Poor","F","Undetermined",NA,10.3,1.69,0.085
+"CRC","1035","Adult","Pre-UME","2010-4-14","April",47.5,-122.39,"WA","2","Fair","M","Trauma",0.99,5.3,0.18,0.149
+"CRC","1524","Immature","Pre-UME","2016-4-30","April",47.53,-122.42,"WA","2.5","Poor","F","Trauma",NA,16.2,1.5,0.099
+"CRC","1652","Adult","Pre-UME","2018-5-8","May",47.56,-124.36,"WA","4","Poor","F","Undetermined",NA,4,7.85,14.449
+"CRC","1712","Adult","UME 2019","2019-4-14","April",47.59,-122.34,"WA","2.5","Poor","M","Nutritional stress",5.37,1.5,0.19,0.052
+"WDFW","2011090","Immature","Pre-UME","2011-7-27","July",47.61,-122.69,"WA","2","Poor","M","Trauma",1.57,16.5,NA,NA
+"CRC","1593","Immature","Pre-UME","2017-7-19","July",47.71,-124.42,"WA","3","Good","F","Trauma",NA,18.8,0.62,0.609
+"CRC","1727","Adult","UME 2019","2019-5-26","May",47.95,-122.65,"WA","2.5","Fair","M","Nutritional stress",3.48,1.5,2.08,0.132
+"CRC","SKMMR2019-5-Er","Adult","UME 2019","2019-5-5","May",47.96,-122.26,"WA","3","Poor","F","Undetermined",11.3,10.3,2.59,0.355
+"CRC","1585","Adult","Pre-UME","2017-5-10","May",48.75,-122.54,"WA","2.5","Fair","F","Undetermined",NA,NA,4.81,0.437
+"AKMMSN","2019100","Immature","UME 2019","2019-6-16","June",56.36,-132.16,"AK","3","Good","M","Nutritional stress",15.47,9.7,0.46,0.082
+"AKMMSN","2019198","Adult","UME 2019","2019-5-9","May",57.44,-152.43,"AK","2","Good","M","Predation",NA,1.6,0.17,0.039
+"AKMMSN","2018088","Adult","Pre-UME","2018-6-28","June",57.47,152.48,"AK","3.5","Poor","F","Trauma",NA,1.2,0.12,0.028
+"AKMMSN","2018158","Unknown","Pre-UME","2018-8-2","August",57.47,-152.48,"AK","4",NA,"F","Predation",11.3,0.8,0.58,0.312
+"AKMMSN","2019031","Adult","UME 2019","2019-5-14","May",60.38,-145.95,"AK","3","Good","F","Nutritional stress",27.24,4.9,0.56,0.093
+"AKMMSN","2017109","Unknown","Pre-UME","2017-7-28","July",60.79,-161.76,"AK","2",NA,"F","Predation",NA,2.8,0.11,NA
+"AKMMSN","2019018","Adult","UME 2019","2019-5-9","May",60.82,-149,"AK","3.5","Good","M","Nutritional stress",56.9,10.3,0.46,0.165
