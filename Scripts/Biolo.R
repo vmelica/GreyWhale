@@ -1,4 +1,8 @@
 rm(list=ls())
+
+getwd() # LINE 250
+# setwd("/Users/valentinamelica/R/Grey-Whale")
+
 suppressMessages(library(cowplot))
 suppressMessages(library(plotrix))
 suppressMessages(library(patchwork))
@@ -15,9 +19,6 @@ suppressMessages(library(plyr))
 suppressMessages(library(here))
 suppressMessages(library(dplyr)) # don't need dplyr if you have tidyverse 
 suppressMessages(library(tidyverse))
-
-getwd() # LINE 250
-# setwd("/Users/valentinamelica/R/GW")
 
 library(MASS)
 library(mixtools)
@@ -106,6 +107,10 @@ ErB$COD= as.factor(ErB$COD)
 levels(ErB$COD)
 #ErB$COD<- ordered(ErB$COD, levels= c("Trauma", "Nutritional stress", "Entanglement", "Predation", "Undertermined"))
 summary(ErB$COD)
+
+ErB$Yr = as.factor(ErB$Yr)
+summary(ErB$Yr)
+
 ##### correlations
 cor.test(ErB$Cts, ErB$Ctn)
 # t = 1.0388, df = 31, p-value = 0.3069
@@ -236,11 +241,12 @@ fit <- lm(Aldo ~ UME, data= ErBALDO)
 plot(fit)
 shapiro.test(resid(fit)) # p < 0.001
 #apply log tranformation
-shapiro.test(log(ErBALDO$Aldo)) # p = 0.2
+shapiro.test(log(ErBALDO$Aldo)) # p = 0.02
 fit <- lm(log(Aldo) ~ UME, data= ErBALDO)
 plot(fit) # variance is good
 shapiro.test(resid(fit)) # p= 0.005
 qqnorm(resid(fit)) # its honestly not too bad
+
 t.test(log(Aldo) ~ UME, data= ErBALDO)
 # t = 2.2232, df = 27.509, p-value = 0.0346
 
@@ -248,9 +254,10 @@ wilcox_test(Aldo ~ UME,  p.adjust.method = "bonferroni", data= ErBALDO)
 #same results with this p= 0.01
 # there is a significant difference however it looks like it is driven by that outlier
 aldo_f <-subset(ErBALDO, ErBALDO$Aldo < 10)
-
+aldo_f <-subset(ErBALDO, ErBALDO$Aldo < 1)
 shapiro.test(aldo_f$Aldo) #p= 0.00001
 wilcox_test(Aldo ~ UME,  p.adjust.method = "bonferroni", data= aldo_f)
+#still significant 
 aldo_f[c(26, 33),] 
 
 # fit <- lm(Aldo ~ UME, data= aldo_f)
@@ -322,14 +329,22 @@ ErBAC %>%
   # filter(Ctn < 20)  %>%
   group_by(Age.class, Sex) %>%
   get_summary_stats(Ctn, type = "mean_sd")
+ErBAC %>%
+  filter(Ctn < 20)  %>%
+  group_by(Age.class) %>%
+  get_summary_stats(Ctn, type = "mean_sd")
+# higher in immature
+ErBAC %>%
+  filter(Ctn < 20)  %>%
+  group_by(Sex) %>%
+  get_summary_stats(Ctn, type = "mean_sd")
+# higher in females with and w/o the outlier
 
 ErBAC %>%
   group_by(Age.class, Sex) %>%
   get_summary_stats(Lipid, type = "mean_sd")
 
 # Cortisol
-fit1 = lm(log(Cts) ~ Age.class, data= ErBAC)
-summary(fit1)
 shapiro.test(resid(fit1)) # p=0.1847
 qqnorm(resid(fit1))
 # plot(fit1,1)
@@ -343,20 +358,21 @@ model_GC_null <- lm(log(Cts) ~ -1, data= ErBAC )
 fit1= lm(log(Cts) ~ Age.class -1, data= ErBAC)
 fit2 = lm(log(Cts) ~ Age.class*Sex -1, data= ErBAC)
 fit3 = lm(log(Cts) ~Sex -1, data= ErBAC)
-fit4 = lm(log(Cts) ~Age.class*Sex*Adjusted_BC -1, data= ErBAC)
+fit4 = lm(log(Cts) ~Age.class+Sex -1, data= ErBAC)
+# fit5 = lm(log(Cts) ~Adjusted_BC -1, data= ErBAC)
 
-summary(fit4)
 MuMIn::AICc(model_GC_null,fit1, fit2,fit3, fit4)
 # fit 1 the model with Age class 
-?dunn_test
-anova(model_GC_null,fit1, fit2,fit3)
-anova(model_GC_null,fit1)
+anova(model_GC_null,fit1, fit2,fit3, fit4)
+anova(model_GC_null,fit1, fit4)
 #the fit1 model is significantly different from the null model
-posthoc_CTS <- emmeans(fit1, ~ Age.class)
-summary(posthoc_CTS)
-posthoc_CTS %>% 
-  pairs() 
-# sifgnificant difference 
+
+# the posthoc test is not really needed becayse we only have two levels in both age classes and sex
+# posthoc_CTS <- emmeans(fit1, ~ Age.class)
+# summary(posthoc_CTS)
+# posthoc_CTS %>% 
+#   pairs() 
+# # sifgnificant difference 
 
 #Immature females have significantly different CTS from Adult female and Adult males
 # 
@@ -373,30 +389,48 @@ posthoc_CTS %>%
 # posthoc_CTS %>% 
 #   pairs() 
 
- 
-view(ErBAC)
 #corticosterone
+shapiro.test(log(ErBAC$Ctn)) # p = 0.17
 fit1 = lm(log(Ctn) ~ Age.class, data= ErBAC)
 summary(fit1)
 shapiro.test(resid(fit1)) # p = 0.35
 qqnorm(resid(fit1))
-bartlett.test(log(ErBAC$Ctn), ErBAC$Age.class)
-#ok
-#not normally distributed
+bartlett.test(log(ErBAC$Ctn), ErBAC$Age.class) # p = 0.93 
+bartlett.test(log(ErBAC$Ctn), ErBAC$Sex) # p= 0.54
+# meet the requirements for parametric test
+
 performance::check_outliers(ErBAC$Ctn)
 
 ErBAC[c(3, 9,25,33),]
 fit1= lm(log(Ctn) ~ Age.class -1, data= ErBAC)
 fit2 = lm(log(Ctn) ~ Age.class*Sex -1, data= ErBAC)
 fit3 = lm(log(Ctn) ~Sex -1, data= ErBAC)
+fit4 = lm(log(Ctn) ~ Age.class+Sex -1, data= ErBAC)
 model_GC_null <- lm(log(Ctn) ~ -1, data= ErBAC)
-MuMIn::AICc(model_GC_null,fit1, fit2,fit3)# fit1
-anova(model_GC_null,fit1)
+MuMIn::AICc(model_GC_null,fit1, fit2,fit3, fit4)
+#               df     AICc
+# model_GC_null  1 110.6472
+# fit1           3 109.0164 
+# fit2           5 109.4163
+# fit3           3 111.2480
+# fit4           4 106.7711 <- this is the lowest
+anova(model_GC_null,fit1,fit4)
+#the addition of sex 
+# t.test(log(Ctn) ~ Age.class, data= ErBAC)
+# 
+# posthoc_CTN <- emmeans(fit1, ~ Age.class)
+# summary(posthoc_CTN)
+# posthoc_CTN %>% 
+#   pairs() 
+# posthoc_CTN <- emmeans(fit4, ~ Sex)
+# summary(posthoc_CTN)
+# posthoc_CTN %>% 
+#   pairs() 
 
-posthoc_CTN <- emmeans(fit1, ~ Age.class)
-summary(posthoc_CTN)
-posthoc_CTN %>% 
-  pairs() 
+library(car)
+fit <- lm(log(Ctn) ~ Age.class + Sex, data = ErBAC)
+Anova(fit, type = 2)
+
 # 
 # fit5 = lm(log(Ctn) ~ Age.class:Sex -1, data= ErBAC)
 # summary(fit5)
@@ -424,30 +458,34 @@ posthoc_CTN %>%
 #Aldosterone with outlier
 performance::check_outliers(ErBAC$Aldo)
 ErBAC[c(13,22,11),]
+shapiro.test(log(ErBAC$Aldo))
+qqnorm(log(ErBAC$Aldo))
 
-fit1 = lm(log(Aldo) ~ Age.class, data= ErBAC)
+fit1 = lm(log(Aldo) ~ Sex, data= ErBAC)
 summary(fit1)
 shapiro.test(resid(fit1))
 qqnorm(resid(fit1))
-bartlett.test(log(ErBAC$Aldo), ErBAC$Age.class)
+bartlett.test(log(ErBAC$Aldo), ErBAC$Sex)
+
 #ok
 fit1= lm(log(Aldo) ~ Age.class-1, data= ErBAC)
 fit2 = lm(log(Aldo) ~ Age.class*Sex-1, data= ErBAC)
 fit3 = lm(log(Aldo) ~Sex -1, data= ErBAC)
+fit4 = lm(log(Aldo) ~ Age.class+Sex-1, data= ErBAC)
 model_GC_null <- lm(log(Aldo) ~ -1, data= ErBAC)
-MuMIn::AICc(model_GC_null,fit1, fit2,fit3) # fit 3
-anova(model_GC_null,fit3)
-
-# wilcox.test(Aldo ~ Age.class, data= ErBAC)
-
-posthoc_Aldo <- emmeans(fit1, ~ Age.class)
-summary(posthoc_Aldo)
-posthoc_Aldo %>% 
-  pairs() 
-posthoc_Aldo <- emmeans(fit3, ~ Sex)
-summary(posthoc_Aldo)
-posthoc_Aldo %>% 
-  pairs() 
+MuMIn::AICc(model_GC_null,fit1, fit2,fit3, fit4) # fit 3
+anova(model_GC_null,fit3, fit4)
+# 
+# # wilcox.test(Aldo ~ Age.class, data= ErBAC)
+# 
+# posthoc_Aldo <- emmeans(fit1, ~ Age.class)
+# summary(posthoc_Aldo)
+# posthoc_Aldo %>% 
+#   pairs() 
+# posthoc_Aldo <- emmeans(fit3, ~ Sex)
+# summary(posthoc_Aldo)
+# posthoc_Aldo %>% 
+#   pairs() 
 
 # #without outlier
 # fit1= glm(Aldo ~ Age.class -1, data= subset(ErBAC,ErBAC$Aldo <10))
@@ -462,6 +500,8 @@ posthoc_Aldo %>%
 #   pairs() 
 # # significan for females
 
+shapiro.test(log(ErBAC$Lipid))
+#log transformed 
 
 fit1 = lm(log(Lipid) ~ Age.class, data= ErBAC)
 summary(fit1)
@@ -472,25 +512,28 @@ bartlett.test(log(ErBAC$Lipid), ErBAC$Age.class)
 fit1= lm(log(Lipid) ~ Age.class, data= ErBAC)
 fit2 = lm(log(Lipid) ~ Age.class*Sex, data= ErBAC)
 fit3 = lm(log(Lipid) ~Sex, data= ErBAC)
+fit4 = lm(log(Lipid) ~ Age.class+Sex, data= ErBAC)
 model_GC_null <- lm(log(Lipid) ~ -1, data= ErBAC )
-MuMIn::AICc(model_GC_null,fit1, fit2,fit3)
+MuMIn::AICc(model_GC_null,fit1, fit2,fit3, fit4)
 anova(model_GC_null,fit1)
-
-posthoc_Lipid <- emmeans(fit1, ~ Age.class)
-summary(posthoc_Lipid)
-posthoc_Lipid %>% 
-  pairs() 
-
+# 
+# posthoc_Lipid <- emmeans(fit1, ~ Age.class)
+# summary(posthoc_Lipid)
+# posthoc_Lipid %>% 
+#   pairs() 
+# 
 
 # showSignificance( c(1,2), 450, -0.05, "ns") + 
 #   showSignificance( c(1,3), 500, -0.05, "ns") +
 #   showSignificance( c(2,3), 425, -0.05, "ns") +
 
 #####blar plot with sd
+# figure
 df1= ErBAC %>%
   #filter(Cts < 30)  %>%
   group_by(Age.class, Sex) %>%
   get_summary_stats(Cts, type = "mean_sd")
+
 Fig2a <- ggplot(df1, aes(x=Age.class, y=mean, fill=Sex)) + 
   geom_bar(stat="identity",color= "black",position=position_dodge()) +
   geom_errorbar(aes(ymin=mean, ymax=mean+sd), width=.2,
@@ -530,7 +573,6 @@ Fig2c <- ggplot(df3, aes(x=Age.class, y=mean, fill=Sex)) +
   ylab("Aldosterone ng/g")+ xlab("")+
   theme_minimal()
 Fig2c
-
 df4= ErBAC %>%
   #filter(Cts < 30)  %>%
   group_by(Age.class, Sex) %>%
@@ -548,10 +590,107 @@ Ageclass <- ggarrange(Fig2a, Fig2b, Fig2c,Fig2d, nrow=2, ncol = 2)
 
 here()
 ggsave(here("./output/Ageclass.png"),Ageclass, width=8, height=8, dpi=600)
-
-
-
 ###########
+# Looking here at a different approach since we have everything log transformed
+fig2a <- ggplot(data = ErBAC, aes(x = Age.class, y=Cts, fill= Sex))+
+  geom_boxplot()+ xlab("")+ ylab("Cortisol ng/g, log scale")+
+  # geom_jitter(aes(shape=Sex), position=position_jitter(0.2), size=1)+
+  scale_fill_manual(values=c('#999999','#E69F00'))+
+  # stat_summary(fun = mean, geom = "errorbar", aes(ymax = after_stat(y), ymin = after_stat(y)),
+  #              width = .75, linetype = "dashed")+
+  scale_y_continuous(
+    trans = "log",
+    breaks = scales::breaks_log(n = 4),
+    labels = scales::label_number(accuracy = 0.01)
+  ) + annotation_logticks(sides = "l")+
+  theme_minimal()+ #scale_shape_manual(values=c(8, 1))+
+  theme(panel.border= element_blank(), 
+        #panel.grid.major = element_blank(), 
+        #panel.grid.minor = element_blank(), 
+        legend.position = "top",
+        axis.line = element_line(linewidth = 0.7, linetype = "solid",
+                                 colour = "black"))+
+  theme(axis.text= element_text(size=10, face= "bold"))+ 
+  theme(axis.title.y=element_text(size=12, face= "bold")) +
+  theme(axis.title.x=element_text(size=10))+
+  labs(tag = "A")
+
+
+fig2b <- ggplot(data = ErBAC, aes(x = Age.class, y=Ctn, fill= Sex))+
+  geom_boxplot()+ xlab("")+ ylab("Corticosterone ng/g, log scale")+
+  # geom_jitter(aes(shape=Sex), position=position_jitter(0.2), size=1)+
+  scale_fill_manual(values=c('#999999','#E69F00'))+
+  # stat_summary(fun = mean, geom = "errorbar", aes(ymax = after_stat(y), ymin = after_stat(y)),
+  #              width = .75, linetype = "dashed")+
+  scale_y_continuous(
+    trans = "log",
+    breaks = scales::breaks_log(n = 4),
+    labels = scales::label_number(accuracy = 0.01)
+  ) + annotation_logticks(sides = "l")+
+  theme_minimal()+ #scale_shape_manual(values=c(8, 1))+
+  theme(panel.border= element_blank(), 
+        #panel.grid.major = element_blank(), 
+        #panel.grid.minor = element_blank(), 
+        legend.position = "top",
+        axis.line = element_line(linewidth = 0.7, linetype = "solid",
+                                 colour = "black"))+
+  theme(axis.text= element_text(size=10, face= "bold"))+ 
+  theme(axis.title.y=element_text(size=12, face= "bold")) +
+  theme(axis.title.x=element_text(size=10))+
+  labs(tag = "B")
+
+fig2c <- ggplot(data = ErBAC, aes(x = Age.class, y=Aldo, fill= Sex))+
+  geom_boxplot()+ xlab("")+ ylab("Aldosterone ng/g, log scale")+
+  # geom_jitter(aes(shape=Sex), position=position_jitter(0.2), size=1)+
+  scale_fill_manual(values=c('#999999','#E69F00'))+
+  # stat_summary(fun = mean, geom = "errorbar", aes(ymax = after_stat(y), ymin = after_stat(y)),
+  #              width = .75, linetype = "dashed")+
+  scale_y_continuous(
+    trans = "log",
+    breaks = scales::breaks_log(n = 4),
+    labels = scales::label_number(accuracy = 0.01)
+  ) + annotation_logticks(sides = "l")+
+  theme_minimal()+ #scale_shape_manual(values=c(8, 1))+
+  theme(panel.border= element_blank(), 
+        #panel.grid.major = element_blank(), 
+        #panel.grid.minor = element_blank(), 
+        legend.position = "top",
+        axis.line = element_line(linewidth = 0.7, linetype = "solid",
+                                 colour = "black"))+
+  theme(axis.text= element_text(size=10, face= "bold"))+ 
+  theme(axis.title.y=element_text(size=12, face= "bold")) +
+  theme(axis.title.x=element_text(size=10))+
+  labs(tag = "C")
+
+fig2d<- ggplot(data = ErBAC, aes(x = Age.class, y=Lipid, fill= Sex))+
+  geom_boxplot()+ xlab("")+ ylab("Lipid content, log scale")+
+  # geom_jitter(aes(shape=Sex), position=position_jitter(0.2), size=1)+
+  scale_fill_manual(values=c('#999999','#E69F00'))+
+  # stat_summary(fun = mean, geom = "errorbar", aes(ymax = after_stat(y), ymin = after_stat(y)),
+  #              width = .75, linetype = "dashed")+
+  scale_y_continuous(
+    trans = "log",
+    breaks = scales::breaks_log(n = 4),
+    labels = scales::label_number(accuracy = 0.01)
+  ) + annotation_logticks(sides = "l")+
+  theme_minimal()+ #scale_shape_manual(values=c(8, 1))+
+  theme(panel.border= element_blank(), 
+        #panel.grid.major = element_blank(), 
+        #panel.grid.minor = element_blank(), 
+        legend.position = "top",
+        axis.line = element_line(linewidth = 0.7, linetype = "solid",
+                                 colour = "black"))+
+  theme(axis.text= element_text(size=10, face= "bold"))+ 
+  theme(axis.title.y=element_text(size=12, face= "bold")) +
+  theme(axis.title.x=element_text(size=10))+
+  labs(tag = "D")
+
+Ageclass_log <- ggarrange(fig2a, fig2b, fig2c,fig2d, nrow=2, ncol = 2)
+
+here()
+ggsave(here("./output/Fig2_Log_Age&Sex.png"),Ageclass_log, width=8, height=8, dpi=600)
+
+
 
 
 
@@ -692,19 +831,90 @@ ErB %>%
 shapiro.test(log(ErB$Cts)) # 
 fit1 <-lm(log(Cts) ~ Adjusted_BC, data= ErB)
 summary(fit1)
-ErB1<-ErB %>% drop_na(Adjusted_BC)
-kruskal.test(Cts ~ Adjusted_BC, data= ErB1)
+
+kruskal.test(Cts ~ Adjusted_BC, data= ErB)
 #Kruskal-Wallis chi-squared = 1.3817, df = 2, p-value = 0.5011
-kruskal.test(Ctn ~ Adjusted_BC, data= ErB1)
+kruskal.test(Ctn ~ Adjusted_BC, data= ErB)
 #Kruskal-Wallis chi-squared = 1.2974, df = 2, p-value = 0.5227
-kruskal.test(Aldo ~ Adjusted_BC, data= ErB1)
+kruskal.test(Aldo ~ Adjusted_BC, data= ErB)
 #Kruskal-Wallis chi-squared = 0.64407, df = 2, p-value = 0.7247
-kruskal.test(Lipid ~ Adjusted_BC, data= ErB1)
+kruskal.test(Lipid ~ Adjusted_BC, data= ErB)
 #Kruskal-Wallis chi-squared = 8.1923, df = 2, p-value = 0.01664
 ?dunn_test
-ErB1 %>% dunn_test(Lipid ~ Adjusted_BC)
+ErB%>% dunn_test(Lipid ~ Adjusted_BC)
 
-Fig4a <- ggplot(data = ErB1, aes(x = Adjusted_BC, y=Cts, fill= Sex))+
+
+#####blar plot with sd
+# figure
+df1= ErB %>%
+  # filter(Cts < 30)%>% 
+  mutate(Adjusted_BC = factor(Adjusted_BC,
+      levels = c("Poor", "Fair", "Good")))%>%
+  group_by(Adjusted_BC) %>%
+  get_summary_stats(Cts, type = "mean_sd")
+
+Fig3a <- ggplot(df1, aes(x=Adjusted_BC, y=mean)) + 
+  geom_bar(stat="identity",color= "black",position=position_dodge()) +
+  geom_errorbar(aes(ymin=mean, ymax=mean+sd), width=.2,
+                position=position_dodge(.9))+
+  scale_fill_manual(values=c('#999999','#E69F00'))+
+  ylab("Cortisol ng/g")+ xlab("")+
+  theme_minimal()+
+  
+Fig3a
+
+df2= ErB %>%
+  # filter(Cts < 30)%>% 
+  mutate(Adjusted_BC = factor(Adjusted_BC,
+  levels = c("Poor", "Fair", "Good")))%>%
+  group_by(Adjusted_BC) %>%
+  get_summary_stats(Ctn, type = "mean_sd")
+Fig3b <- ggplot(df2, aes(x=Adjusted_BC, y=mean)) + 
+  geom_bar(stat="identity",color= "black",position=position_dodge()) +
+  geom_errorbar(aes(ymin=mean, ymax=mean+sd), width=.2,
+                position=position_dodge(.9))+
+  scale_fill_manual(values=c('#999999','#E69F00'))+
+  ylab("Corticosterone ng/g")+ xlab("")+
+  theme_minimal()
+# geom_signif(comparisons = list(c("Adult", "Immature")),
+#             map_signif_level = TRUE,
+#             annotations = c("*"))
+Fig3b 
+df3= ErB %>%
+  # filter(Cts < 30)%>% 
+  mutate(Adjusted_BC = factor(Adjusted_BC,
+  levels = c("Poor", "Fair", "Good")))%>%
+  group_by(Adjusted_BC) %>%
+  get_summary_stats(Aldo, type = "mean_sd")
+Fig3c <- ggplot(df3, aes(x=Adjusted_BC, y=mean)) + 
+  geom_bar(stat="identity",color= "black",position=position_dodge()) +
+  geom_errorbar(aes(ymin=mean, ymax=mean+sd), width=.2,
+                position=position_dodge(.9))+
+  scale_fill_manual(values=c('#999999','#E69F00'))+
+  ylab("Aldosterone ng/g")+ xlab("")+
+  theme_minimal()
+Fig3c
+df4= ErB %>%
+  # filter(Cts < 30)%>% 
+  mutate(Adjusted_BC = factor(Adjusted_BC,
+                              levels = c("Poor", "Fair", "Good")))%>%
+  group_by(Adjusted_BC) %>%
+  get_summary_stats(Lipid, type = "mean_sd")
+Fig4d <- ggplot(df4, aes(x=Adjusted_BC, y=mean)) + 
+  geom_bar(stat="identity",color= "black",position=position_dodge()) +
+  geom_errorbar(aes(ymin=mean, ymax=mean+sd), width=.2,
+                position=position_dodge(.9))+
+  scale_fill_manual(values=c('#999999','#E69F00'))+
+  ylab("Lipid content %")+ xlab("")+
+  theme_minimal()
+Fig4d
+
+Ageclass <- ggarrange(Fig2a, Fig2b, Fig2c,Fig2d, nrow=2, ncol = 2)
+
+here()
+ggsave(here("./output/Ageclass.png"),Ageclass, width=8, height=8, dpi=600)
+
+Fig4a <- ggplot(data = ErB, aes(x = Adjusted_BC, y=Cts, fill= Sex))+
   geom_boxplot()+ xlab("")+ ylab("Cortisol ng/g, log scale")+
   # geom_jitter(aes(shape=Sex), position=position_jitter(0.2), size=1)+
   scale_fill_manual(values=c('#999999','#E69F00'))+
