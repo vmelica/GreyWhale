@@ -163,34 +163,41 @@ model_GC_null <- lmer(log(Cts)~ (1|ID) - 1, data = ErCTS)
 MuMIn::AICc(model_GC_null,model_Cts1,model_Cts2)
 anova(model_GC_null,model_Cts1,model_Cts2)
 posthoc_Cts1 <- emmeans(model_Cts1,  pairwise~ BlubberDEPTH)
-
-
 summary(posthoc_Cts1) # significantly different between surface and medium layer
 # surface and medium sign diff
 ErCTS$BlubberDEPTH<- ordered(ErCTS$BlubberDEPTH, levels= c("Bottom", "Medium", "Surface"))
-
+shapes = c("F" = 24, "M" = 21)
+cols = c("F" = '#999999', "M" = '#E69F00')
 
 library(scales)
 Fig2a <- ggplot(data=ErCTS, aes(y=Cts, x=BlubberDEPTH))+
   geom_boxplot()+ xlab("")+ ylab("Cortisol ng/g")+
-  geom_jitter(aes(shape=Sex),position=position_jitter(0.2), size=2)+
+  geom_jitter(aes(shape=Sex, fill=Sex),position=position_jitter(0.2), size=2)+
   stat_summary(fun = mean, geom = "errorbar", aes(ymax = after_stat(y), ymin = after_stat(y)),
                width = .75, linetype = "dashed")+
-  scale_y_continuous(trans='log10')+ annotation_logticks(sides= "l")+
-  # scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-  #               labels = trans_format("log10", math_format(10^.x)))
+  scale_shape_manual(values = shapes, name= "Sex")+
+  scale_fill_manual(values = cols, name= "Sex")+
   theme_bw()+
-  scale_shape_manual(values=c(8, 1))+
-  theme(panel.border= element_blank(), 
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        legend.position = "none",
-        axis.line = element_line(linewidth= 0.7, linetype = "solid",
-                                 colour = "black"))+
-  theme(axis.text.x= element_text(size=12, face= "bold"))+
-  theme(axis.text.y=element_text(size=10)) +
-  theme(axis.title.y=element_text(size=12, face= "bold")) +
-  theme(axis.title.x=element_text(size=10))
+  scale_y_continuous(trans='log10')+ annotation_logticks(sides= "l")+
+  annotate("text",
+           x = -Inf,
+           y = Inf,
+           label = "A",
+           hjust = 2.5,
+           vjust = 1,
+           size = 6,
+           fontface = "bold")+
+  coord_cartesian(clip = "off") +
+  theme(
+    legend.position = "top",
+    axis.line = element_line(linewidth = 0.7, colour = "black"),
+    axis.text.x = element_text(size = 10, face = "bold"),
+    axis.text.y = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    plot.margin = margin(10, 10, 10, 20)  # extra space on left
+  )
+
 Fig2a
 
 ###########CONTINUE HERE
@@ -273,28 +280,34 @@ levels(ErCTS$BlubberDEPTH)
 
 ErCTN$BlubberDEPTH<- ordered(ErCTN$BlubberDEPTH, levels= c("Bottom", "Medium", "Surface"))
 
-levels(ErCTS$BlubberDEPTH) 
-ErCTS$BlubberDEPTH<- ordered(ErCTS$BlubberDEPTH, levels= c("Bottom", "Medium", "Surface"))
 Fig2b <- ggplot(data=ErCTN, aes(y=Ctn, x=BlubberDEPTH))+
-  geom_boxplot()+ xlab("")+ ylab("Log [Corticosterone ng/g]")+
-  geom_jitter(aes(shape=Sex),position=position_jitter(0.2), size=2)+
+  geom_boxplot()+ xlab("")+ ylab("Corticosterone ng/g")+
+  geom_jitter(aes(shape=Sex, fill=Sex),position=position_jitter(0.2), size=2)+
   stat_summary(fun = mean, geom = "errorbar", aes(ymax = after_stat(y), ymin = after_stat(y)),
                width = .75, linetype = "dashed")+
-  scale_y_continuous(trans='log10')+ annotation_logticks(sides= "l")+
-  # scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-  #               labels = trans_format("log10", math_format(10^.x)))
+  scale_shape_manual(values = shapes, name= "Sex")+
+  scale_fill_manual(values = cols, name= "Sex")+
   theme_bw()+
-  scale_shape_manual(values=c(8, 1))+
-  theme(panel.border= element_blank(), 
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        legend.position = "none",
-        axis.line = element_line(linewidth= 0.7, linetype = "solid",
-                                 colour = "black"))+
-  theme(axis.text.x= element_text(size=12, face= "bold"))+
-  theme(axis.text.y=element_text(size=10)) +
-  theme(axis.title.y=element_text(size=12, face= "bold")) +
-  theme(axis.title.x=element_text(size=10))
+  scale_y_continuous(trans='log10')+ annotation_logticks(sides= "l")+
+  annotate("text",
+           x = -Inf,
+           y = Inf,
+           label = "B",
+           hjust = 2.5,
+           vjust = 1,
+           size = 6,
+           fontface = "bold")+
+  coord_cartesian(clip = "off") +
+  theme(
+    legend.position = "top",
+    axis.line = element_line(linewidth = 0.7, colour = "black"),
+    axis.text.x = element_text(size = 10, face = "bold"),
+    axis.text.y = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    plot.margin = margin(10, 10, 10, 20)  # extra space on left
+  )
+
 Fig2b
 
 #Aldosterone and Fig 2c
@@ -321,34 +334,46 @@ tapply(ErALDO$Aldo, FUN=range, INDEX= ErALDO$BlubberDEPTH)
 #Surface
 #0.04 1.52
 model_Aldo1<- lmer(log(Aldo) ~ BlubberDEPTH + (1|ID) - 1, data = ErALDO)
-# model_Aldo2<- lmer(Aldo ~ BlubberDEPTH :Sex+ (1|ID) - 1, data = ErALDO)
+model_Aldo2<- lmer(Aldo ~ BlubberDEPTH:Sex+ (1|ID) - 1, data = ErALDO)
 model_ALDO_null <- lmer(log(Aldo)~ (1|ID) - 1, data = ErALDO)
-MuMIn::AICc(model_ALDO_null,model_Aldo1 )
+MuMIn::AICc(model_ALDO_null,model_Aldo1, model_Aldo2)
 anova(model_ALDO_null, model_Aldo1, model_Aldo2)
 summary(model_Aldo1)
 posthoc_Aldo1 <- emmeans(model_Aldo1, pairwise~BlubberDEPTH )
 summary(posthoc_Aldo1) # no statistical difference
 
+ErALDO$BlubberDEPTH<- ordered(ErALDO$BlubberDEPTH, levels= c("Bottom", "Medium", "Surface"))
+
+shapes = c("F" = 24, "M" = 21)
+cols = c("F" = '#999999', "M" = '#E69F00')
+
 Fig2c <- ggplot(data=ErALDO, aes(y=Aldo, x=BlubberDEPTH))+
-  geom_boxplot()+ xlab("")+ ylab("Log [Aldosterone ng/g]")+
-  geom_jitter(aes(shape=Sex),position=position_jitter(0.2), size=2)+
+  geom_boxplot()+ xlab("")+ ylab("Aldosterone ng/g")+
+  geom_jitter(aes(shape=Sex, fill=Sex),position=position_jitter(0.2), size=2)+
   stat_summary(fun = mean, geom = "errorbar", aes(ymax = after_stat(y), ymin = after_stat(y)),
                width = .75, linetype = "dashed")+
-  scale_y_continuous(trans='log10')+ annotation_logticks(sides= "l")+
-  # scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-  #               labels = trans_format("log10", math_format(10^.x)))
+  scale_shape_manual(values = shapes, name= "Sex")+
+  scale_fill_manual(values = cols, name= "Sex")+
   theme_bw()+
-  scale_shape_manual(values=c(8, 1))+
-  theme(panel.border= element_blank(), 
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        legend.position = "none",
-        axis.line = element_line(linewidth= 0.7, linetype = "solid",
-                                 colour = "black"))+
-  theme(axis.text.x= element_text(size=12, face= "bold"))+
-  theme(axis.text.y=element_text(size=10)) +
-  theme(axis.title.y=element_text(size=12, face= "bold")) +
-  theme(axis.title.x=element_text(size=10))
+  scale_y_continuous(trans='log10')+ annotation_logticks(sides= "l")+
+  annotate("text",
+           x = -Inf,
+           y = Inf,
+           label = "C",
+           hjust = 2.5,
+           vjust = 1,
+           size = 6,
+           fontface = "bold")+
+  coord_cartesian(clip = "off") +
+  theme(
+    legend.position = "top",
+    axis.line = element_line(linewidth = 0.7, colour = "black"),
+    axis.text.x = element_text(size = 10, face = "bold"),
+    axis.text.y = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    plot.margin = margin(10, 10, 10, 20)  # extra space on left
+  )
 Fig2c
 
 # # remove of outlier
@@ -390,33 +415,43 @@ summary(posthoc_Lipid) # surface layer is significantly different from the other
 # summary(model_Lipid)
 # posthoc_Lipid <- emmeans(model_Lipid, pairwise~BlubberDEPTH, adjust= "bonferroni" )
 # summary(posthoc_Lipid)
+ErLipid$BlubberDEPTH<- ordered(ErLipid$BlubberDEPTH, levels= c("Bottom", "Medium", "Surface"))
+shapes = c("F" = 24, "M" = 21)
+cols = c("F" = '#999999', "M" = '#E69F00')
 
 Fig2d <- ggplot(data=ErLipid, aes(y=LIPID, x=BlubberDEPTH))+
-  geom_boxplot()+ xlab("")+ ylab("Log [Lipid content %]")+
-  geom_jitter(aes(shape=Sex),position=position_jitter(0.2), size=2)+
+  geom_boxplot()+ xlab("")+ ylab("Lipid content %")+
+  geom_jitter(aes(shape=Sex, fill=Sex),position=position_jitter(0.2), size=2)+
   stat_summary(fun = mean, geom = "errorbar", aes(ymax = after_stat(y), ymin = after_stat(y)),
                width = .75, linetype = "dashed")+
-  scale_y_continuous(trans='log10')+ annotation_logticks(sides= "l")+
-  # scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-  #               labels = trans_format("log10", math_format(10^.x)))
+  scale_shape_manual(values = shapes, name= "Sex")+
+  scale_fill_manual(values = cols, name= "Sex")+
   theme_bw()+
-  scale_shape_manual(values=c(8, 1))+
-  theme(panel.border= element_blank(), 
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        legend.position = "none",
-        axis.line = element_line(linewidth= 0.7, linetype = "solid",
-                                 colour = "black"))+
-  theme(axis.text.x= element_text(size=12, face= "bold"))+
-  theme(axis.text.y=element_text(size=10)) +
-  theme(axis.title.y=element_text(size=12, face= "bold")) +
-  theme(axis.title.x=element_text(size=10))
+  scale_y_continuous(trans='log10')+ annotation_logticks(sides= "l")+
+  annotate("text",
+           x = -Inf,
+           y = Inf,
+           label = "D",
+           hjust = 2.5,
+           vjust = 1,
+           size = 6,
+           fontface = "bold")+
+  coord_cartesian(clip = "off") +
+  theme(
+    legend.position = "top",
+    axis.line = element_line(linewidth = 0.7, colour = "black"),
+    axis.text.x = element_text(size = 10, face = "bold"),
+    axis.text.y = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    plot.margin = margin(10, 10, 10, 20)  # extra space on left
+  )
+
 Fig2d
 
 BlbDepth_with <- ggarrange(Fig2a, Fig2b, Fig2c,Fig2d, nrow=2, ncol = 2)
 BlbDepth_with
-here()
-ggsave(here("./output/Blubberdepth.png"),BlbDepth_with, width=8, height=8, dpi=600)
+ggsave(here("./output/Blubberdepth.png"),BlbDepth_with, width=10, height=10, dpi=600)
 
 ####without outlier
 fig2a <- ggplot(data=subset(ErCTS, ErCTS$Cts <25), aes(y=Cts, x=BlubberDEPTH))+

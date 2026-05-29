@@ -410,7 +410,7 @@ bartlett.test(log(ErBAC$Lipid), ErBAC$Age.class)
 #   showSignificance( c(1,3), 500, -0.05, "ns") +
 #   showSignificance( c(2,3), 425, -0.05, "ns") +
 
-#####blar plot with sd
+#####blar plot with sd- row data here , next section (line 447ish) has the log transformed
 # figure
 df1= ErBAC %>%
   #filter(Cts < 30)  %>%
@@ -471,8 +471,9 @@ Fig2d
 
 Ageclass <- ggarrange(Fig2a, Fig2b, Fig2c,Fig2d, nrow=2, ncol = 2)
 
-here()
-ggsave(here("./output/Ageclass.png"),Ageclass, width=8, height=8, dpi=600)
+ggsave(here("./output/Ageclass_barplot.png"),Ageclass, width=8, height=8, dpi=600)
+
+
 ###########
 # Looking here at a different approach since we have everything log transformed
 fig2a <- ggplot(data = ErBAC, aes(x = Age.class, y=Cts, fill= Sex))+

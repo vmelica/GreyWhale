@@ -29,7 +29,7 @@ Vial #,MMSN,Field ID,Bluber Depth,Age class,time,Yr,Mo,Da,Month,Latitude N,Longi
 26/60,CRC,1585,Surface,Adult,Pre-UME,2017,5,10,May,48.75,-122.54,WA,2.5,Fair-Poor,Fair,F,Undetermined,,,,4.81,,0.437,2.21
 116,AKMMSN,2019100,Surface,Immature,UME 2019,2019,6,16,June,56.36,-132.16,AK,3,Good,Good,M,Nutritional stress,15.47,9.7,3.5,0.46,3.12,0.082,7.2
 108,AKMMSN,2019198,Surface,Adult,UME 2019,2019,5,9,May,57.44,-152.43,AK,2,Good,Good,M,Predation,,1.6,0.9,0.17,,0.039,4.1
-106,AKMMSN,2018088,Surface,Adult,Pre-UME,2018,6,28,June,57.47,152.48,AK,3.5,Poor,Poor,F,Trauma,,1.2,8.5,0.12,1.66,0.028,6.18
+106,AKMMSN,2018088,Surface,Adult,Pre-UME,2018,6,28,June,57.47,-152.48,AK,3.5,Poor,Poor,F,Trauma,,1.2,8.5,0.12,1.66,0.028,6.18
 110,AKMMSN,2018158,Surface,Unknown,Pre-UME,2018,8,2,August,57.47,-152.48,AK,4,NA,NA,F,Predation,11.3,0.8,0.2,0.58,,0.312,2.97
 114,AKMMSN,2019031,Surface,Adult,UME 2019,2019,5,14,May,60.38,-145.95,AK,3,Good/Fair,Good,F,Nutritional stress,27.24,4.9,2.4,0.56,10.64,0.093,5.9
 122,AKMMSN,2017109,Surface,Unknown,Pre-UME,2017,7,28,July,60.79,-161.76,AK,2,NA,NA,F,Predation,,2.8,3.7,0.11,,,
