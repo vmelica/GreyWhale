@@ -4,8 +4,6 @@ getwd() # LINE 250
 rm(list=ls())
   
 
-
-setwd("/Users/valentinamelica/R/GW")
 # validation after gray whale analysis
 library(plotrix)
 library(MASS)
@@ -72,7 +70,7 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 }
 
 #Gray whale analysis in relation to blubber depth 
-Er<- read.csv("/Users/valentinamelica/R/GW/data/GW_BLB.csv", header=TRUE)
+Er<- read.csv(here ("./data/GW_BLB.csv"), header=TRUE)
 str(Er)
 colnames(Er) <- c("vial", "MMSNW" , "ID","BlubberDEPTH","Sex", "Age.class", "BoCo" ,"CarCode"   , "BlubberWeight" ,      
                      "Cts", "Cts CV", "Ctn" ,  "Ctn CV",  "Aldo", "Aldo CV", "LIPID")
@@ -83,7 +81,7 @@ Er$BlubberDEPTH = as.factor(Er$BlubberDEPTH)
 summary(Er$BlubberDEPTH)
 Er$Age.class= as.factor(Er$Age.class)
 summary(Er$Age.class)
-Er$BlubberDEPTH <- ordered(Er$BlubberDEPTH, levels=c("Surface", "Medium", "Bottom"))
+# Er$BlubberDEPTH <- ordered(Er$BlubberDEPTH, levels=c("Surface", "Medium", "Bottom"))
 Er$BoCo =as.factor(Er$BoCo)
 levels(Er$BoCo)
 
@@ -165,7 +163,7 @@ anova(model_GC_null,model_Cts1,model_Cts2)
 posthoc_Cts1 <- emmeans(model_Cts1,  pairwise~ BlubberDEPTH)
 summary(posthoc_Cts1) # significantly different between surface and medium layer
 # surface and medium sign diff
-ErCTS$BlubberDEPTH<- ordered(ErCTS$BlubberDEPTH, levels= c("Bottom", "Medium", "Surface"))
+ErCTS$BlubberDEPTH<- ordered(ErCTS$BlubberDEPTH, levels= c("Surface", "Medium", "Bottom"))
 shapes = c("F" = 24, "M" = 21)
 cols = c("F" = '#999999', "M" = '#E69F00')
 
@@ -185,7 +183,7 @@ Fig2a <- ggplot(data=ErCTS, aes(y=Cts, x=BlubberDEPTH))+
            label = "A",
            hjust = 2.5,
            vjust = 1,
-           size = 6,
+           size = 4,
            fontface = "bold")+
   coord_cartesian(clip = "off") +
   theme(
@@ -278,7 +276,7 @@ summary(posthoc_Ctn2) # no statistical difference
 
 levels(ErCTS$BlubberDEPTH) 
 
-ErCTN$BlubberDEPTH<- ordered(ErCTN$BlubberDEPTH, levels= c("Bottom", "Medium", "Surface"))
+ErCTN$BlubberDEPTH<- ordered(ErCTN$BlubberDEPTH, levels= c("Surface", "Medium", "Bottom"))
 
 Fig2b <- ggplot(data=ErCTN, aes(y=Ctn, x=BlubberDEPTH))+
   geom_boxplot()+ xlab("")+ ylab("Corticosterone ng/g")+
@@ -295,7 +293,7 @@ Fig2b <- ggplot(data=ErCTN, aes(y=Ctn, x=BlubberDEPTH))+
            label = "B",
            hjust = 2.5,
            vjust = 1,
-           size = 6,
+           size = 4,
            fontface = "bold")+
   coord_cartesian(clip = "off") +
   theme(
@@ -342,7 +340,7 @@ summary(model_Aldo1)
 posthoc_Aldo1 <- emmeans(model_Aldo1, pairwise~BlubberDEPTH )
 summary(posthoc_Aldo1) # no statistical difference
 
-ErALDO$BlubberDEPTH<- ordered(ErALDO$BlubberDEPTH, levels= c("Bottom", "Medium", "Surface"))
+ErALDO$BlubberDEPTH<- ordered(ErALDO$BlubberDEPTH, levels= c("Surface", "Medium", "Bottom"))
 
 shapes = c("F" = 24, "M" = 21)
 cols = c("F" = '#999999', "M" = '#E69F00')
@@ -362,7 +360,7 @@ Fig2c <- ggplot(data=ErALDO, aes(y=Aldo, x=BlubberDEPTH))+
            label = "C",
            hjust = 2.5,
            vjust = 1,
-           size = 6,
+           size = 4,
            fontface = "bold")+
   coord_cartesian(clip = "off") +
   theme(
@@ -415,7 +413,7 @@ summary(posthoc_Lipid) # surface layer is significantly different from the other
 # summary(model_Lipid)
 # posthoc_Lipid <- emmeans(model_Lipid, pairwise~BlubberDEPTH, adjust= "bonferroni" )
 # summary(posthoc_Lipid)
-ErLipid$BlubberDEPTH<- ordered(ErLipid$BlubberDEPTH, levels= c("Bottom", "Medium", "Surface"))
+ErLipid$BlubberDEPTH<- ordered(ErLipid$BlubberDEPTH, levels= c("Surface", "Medium", "Bottom"))
 shapes = c("F" = 24, "M" = 21)
 cols = c("F" = '#999999', "M" = '#E69F00')
 
@@ -434,7 +432,7 @@ Fig2d <- ggplot(data=ErLipid, aes(y=LIPID, x=BlubberDEPTH))+
            label = "D",
            hjust = 2.5,
            vjust = 1,
-           size = 6,
+           size = 4,
            fontface = "bold")+
   coord_cartesian(clip = "off") +
   theme(
